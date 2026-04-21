@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Index Drive Interactif</title>
+  <link href="https://fonts.googleapis.com/css?family=Oswald:700|Roboto:400,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+  <button id="lang-btn">FR</button>
+  <aside>
+    <div class="logo-box">
+      <img src="static/logo.png" alt="Logo" />
+    </div>
+    <div class="sidebar-title i18n" data-key="sidebar_title">📂 Sommaire du dossier</div>
+    <input type="text" id="searchInput" placeholder="Rechercher…" style="width:95%; margin:0.7em 0; padding:7px 10px; border-radius:6px; border:none; font-size:1em;">
+    <ul class="tree" id="folder-tree"></ul>
+    <div class="stat-panel" id="stat-panel"></div>
+  </aside>
+  <main>
+    <h1><span class="i18n" data-key="title">Index interactif du dossier Google Drive</span></h1>
+    <div id="file-preview" class="file-preview">
+      <div>
+        <h2 class="summary-title i18n" data-key="summary">Sélectionnez un fichier pour voir le résumé et les actions.</h2>
+        <div class="summary-content"></div>
+      </div>
+    </div>
+    <div class="btn-bar">
+      <button id="btn-zip" class="i18n" data-key="download">Télécharger l’archive ZIP</button>
+      <button id="btn-export-json" class="i18n" data-key="export_json">Exporter JSON</button>
+      <button id="btn-export-csv" class="i18n" data-key="export_csv">Exporter CSV</button>
+      <button id="btn-export-notion" class="i18n" data-key="export_notion">Exporter vers Notion</button>
+    </div>
+  </main>
+  <div class="footer">
+    <span>🔒 Généré par <span class="signature">Maitre Jordan</span> &copy; 2025 — Propulsé par GPT & Notion</span>
+  </div>
+  <script>
+    // Cette partie sera remplie automatiquement par le script Python
+    // ... (ne rien changer ici)
+    const i18n = {
+      fr: {
+        sidebar_title: "📂 Sommaire du dossier",
+        title: "Index interactif du dossier Google Drive",
+        summary: "Sélectionnez un fichier pour voir le résumé et les actions.",
+        stats: "Statistiques",
+        download: "Télécharger l’archive ZIP",
+        export_json: "Exporter JSON",
+        export_csv: "Exporter CSV",
+        export_notion: "Exporter vers Notion"
+      },
+      en: {
+        sidebar_title: "📂 Folder summary",
+        title: "Interactive Google Drive Folder Index",
+        summary: "Select a file to see summary and actions.",
+        stats: "Statistics",
+        download: "Download ZIP archive",
+        export_json: "Export JSON",
+        export_csv: "Export CSV",
+        export_notion: "Export to Notion"
+      }
+    };
+    function setLang(lang) {
+      document.querySelectorAll('.i18n').forEach(span => {
+        let key = span.getAttribute("data-key");
+        if (i18n[lang] && i18n[lang][key]) span.textContent = i18n[lang][key];
+      });
+    }
+    document.getElementById("lang-btn").onclick = function(){
+      let next = this.textContent === "FR" ? "EN" : "FR";
+      this.textContent = next;
+      setLang(next.toLowerCase());
+    };
+    // --- Sommaire dynamique et preview ---
+    function createTree(tree, parentElem) {
+      tree.forEach(item => {
+        let li = document.createElement("li");
+        if (item.type === "folder") {
+          li.innerHTML = `<span class="folder"><span class="toggle">▼</span>${item.name}</span>`;
+          let ul = document.createElement("ul");
+          ul.style.display = "block";
+          createTree(item.children, ul);
+          li.appendChild(ul);
+          li.querySelector(".toggle").onclick = function(e){
+            ul.style.display = (ul.style.display === "none") ? "block" : "none";
+            this.textContent = ul.style.display === "none" ? "►" : "▼";
+            e.stopPropagation();
+          };
+        } else if (item.type === "file") {
+          li.innerHTML = `<span class="file"><span class="file-icon">📄</span>${item.name}</span>`;
+          li.onclick = function(){
+            showFilePreview(item);
+            document.querySelectorAll('.selected').forEach(el => el.classList.remove('selected'));
+            li.classList.add('selected');
+          };
+        }
+        parentElem.appendChild(li);
+      });
+    }
+    function showFilePreview(item){
+      const div = document.getElementById("file-preview");
+      div.innerHTML = `
+        <div>
+          <h2>${item.name}</h2>
+          <div style="color:#ffd862; font-size:1em;">Type: <b>${item.ext||'dossier'}</b> | Poids: <b>${Math.round(item.size/1024)||'0'} Ko</b></div>
+          ${item.miniature ? `<img src="${item.miniature}" class="preview-img" alt="miniature"/>` : ""}
+          ${item.extrait ? `<p style="margin-top:1.2em;"><b>Extrait :</b><br>${item.extrait}</p>` : ""}
+          ${item.resume ? `<div class="summary-content"><b>Résumé IA :</b> <em>${item.resume}</em></div>` : ""}
+        </div>
+      `;
+    }
+    window.onload = function(){
+      setLang("fr");
+      createTree(folderTree, document.getElementById("folder-tree"));
+      let s = dossierStats;
+      document.getElementById("stat-panel").innerHTML = `
+        <b>${i18n.fr.stats}</b> :<br>
+        Fichiers : <b>${s.fichiers}</b><br>
+        PDF : <b>${s.pdf}</b> | DOCX : <b>${s.docx}</b> | Images : <b>${s.images}</b><br>
+        Autres : <b>${s.autres}</b><br>
+        Poids total : <b>${Math.round(s.poids_total/1024/1024)} Mo</b>
+      `;
+    }
+    document.getElementById("searchInput").addEventListener("input", function(){
+      let txt = this.value.toLowerCase();
+      document.querySelectorAll(".file, .folder").forEach(el => {
+        el.parentElement.style.display = el.textContent.toLowerCase().includes(txt) ? "" : "none";
+      });
+    });
+  </script>
+</body>
+</html>

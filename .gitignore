@@ -1,0 +1,6 @@
+.env
+__pycache__/
+*.pyc
+miniatures/
+index_interactif.html
+.mypy_cache/

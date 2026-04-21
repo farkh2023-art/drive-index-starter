@@ -1,0 +1,38 @@
+:root {
+    --accent: #ffd700;
+    --bg1: #181d2a;
+    --bg2: #232840;
+    --sidebar: #1e2536;
+    --txt: #f6f6f9;
+    --hover: #294580;
+    --btn-grad: linear-gradient(90deg, #47e6c1 30%, #6cc2fe 100%);
+    --footer-bg: #131622;
+    --card: #222b49;
+  }
+  
+  body { background:var(--bg1); color:var(--txt); font-family: 'Roboto', Arial, sans-serif; min-height:100vh; display:flex;}
+  aside { width:310px; background:var(--sidebar); box-shadow:2px 0 16px #0005; padding:2.5rem 1.2rem 2rem 1.2rem; position:fixed; top:0; bottom:0; left:0; overflow-y:auto; }
+  .logo-box {text-align:center;margin-bottom:1.7em;}
+  .logo-box img {max-width:108px; border-radius:18px; box-shadow:0 3px 16px #0005;}
+  .sidebar-title {font-size:1.25em; color:var(--accent);}
+  ul.tree, ul.tree ul {list-style:none; padding-left:1em;}
+  ul.tree {padding:0;}
+  .folder, .file {cursor:pointer; display:flex; align-items:center; padding:4px 0 4px 7px; border-radius:6px; transition:background .13s; font-size:1.09em;}
+  .folder:hover, .file:hover {background:var(--hover);}
+  .file {color:#a3b2ce; margin-left:13px;}
+  .folder>.toggle {margin-right:7px; color:var(--accent);}
+  .file>.file-icon {margin-right:7px; font-size:1.16em;}
+  .selected {background:#36427a !important;}
+  .stat-panel {background:var(--bg2); border-radius:15px; box-shadow:0 2px 15px #0003; margin-top:2.7rem; padding:1.3em 1em; font-size:1.08em;}
+  .stat-panel b {color:var(--accent);}
+  .file-preview {background:var(--card); border-radius:14px; margin:2em 0; padding:1.6em; box-shadow:0 2px 14px #0002;}
+  .preview-img {max-width:210px; max-height:170px; border-radius:8px; box-shadow:0 2px 12px #0005; margin-right:1.4em;}
+  .btn-bar {margin-top:1.7em;}
+  button {background:var(--btn-grad); color:var(--bg1); border:none; font-family:'Oswald',Arial,sans-serif; font-weight:700; padding:0.72em 1.2em; border-radius:9px; font-size:1.04em; margin-right:0.95em; margin-bottom:0.7em; cursor:pointer; box-shadow:0 1px 8px #0002; transition:transform .08s, box-shadow .15s;}
+  button:hover {transform:scale(1.06); box-shadow:0 3px 18px #0005;}
+  #lang-btn {position:absolute;top:1.2em;right:2.2em;z-index:1000;background:var(--accent);color:var(--bg1);border-radius:14px;padding:8px 19px;font-size:1.06em;}
+  .footer {background:var(--footer-bg); color:var(--accent); text-align:center; padding:2em 0 1em 0; position:fixed; left:310px; right:0; bottom:0; font-size:1.08em; letter-spacing:0.5px;}
+  .signature {display:inline-block; font-family:'Oswald',sans-serif; color:var(--accent); margin-left:0.5em; font-size:1.13em;}
+  @media (max-width:900px) {aside{width:75vw;} main{margin-left:75vw;} .footer{left:75vw;}}
+  @media (max-width:600px) {aside{position:relative;width:100vw;} main{margin-left:0;} .footer{left:0;}}
+  
